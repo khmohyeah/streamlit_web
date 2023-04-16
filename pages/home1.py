@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import datetime
-import geopy
+#import geopy
 from geopy.geocoders import Nominatim
 
 st.title('아파트매매실거래가정보 : 경기도 20220301~20230228')
@@ -42,7 +42,6 @@ if st.checkbox('선택 Show raw data'):
 # 차트 데이터
 arrDangi = df2['단지명'].unique()
 arrYymm = df2['계약년월'].unique()
-arrAddress = df2['도로명'].unique()
 chart_data = pd.DataFrame(arrYymm)
 chart_data.columns = ['계약년월']
 
@@ -90,26 +89,10 @@ chart_data1 = pd.DataFrame(chart_data1, columns=options)
 st.line_chart(chart_data1)
 
 # 지도 표시
-def geocoding(address) : 
-    crd = ""
-    geolocoder = Nominatim(user_agent='South Korea', timeout=None)
-    geo = geolocoder.geocode(address)
-    if geo != None :
-        crd = {"lat" : str(geo.latitude), "lon" : str(geo.longitude)}
-    return crd
-
-
-
 st.subheader("지도보기")
 with st.expander("Open Map") :
-    #지도 위에 표시될 점 좌표 값을 위도경도에 담습니다 .
-    map_data = pd.DataFrame(columns=['lat', 'lon'])
-    for i in range(arrAddress.size):
-        crd = geocoding(arrAddress[i])
-        if crd != "" :
-            map_position = pd.DataFrame(
-                {'lat': [float(crd['lat'])], 'lon': [float(crd['lon'])]})
-            map_data = pd.concat([map_data, map_position])
+    map_data = pd.DataFrame(df2, columns=['lat', 'lon'])
+    map_data = map_data.loc[map_data['lat'] > 0]
 
     # Map 생성 
     # myMap.save('index.html')
