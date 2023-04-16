@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import datetime
+import geopy
 from geopy.geocoders import Nominatim
 
 st.title('아파트매매실거래가정보 : 경기도 20220301~20230228')
@@ -111,4 +112,5 @@ with st.expander("Open Map") :
             map_data = pd.concat([map_data, map_position])
 
     # Map 생성 
+    # myMap.save('index.html')
     st.map(map_data)

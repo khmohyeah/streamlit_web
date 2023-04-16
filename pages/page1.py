@@ -1,38 +1,46 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
+from io import StringIO
 
-st.title('Uber pickups in NYC')
+st.title('탭/파일')
 
-DATE_COLUMN = 'date/time'
-DATA_URL = ('https://s3-us-west-2.amazonaws.com/'
-            'streamlit-demo-data/uber-raw-data-sep14.csv.gz')
+tab1, tab2, tab3 = st.tabs(["Cat", "Dog", "Owl"])
 
+with tab1:
+   st.header("CSV 바로읽기")
+   st.image("https://static.streamlit.io/examples/cat.jpg", width=200)
+ 
+   df_pop = pd.read_csv('./data/test.csv')
+   st.write(df_pop)
+   
+with tab2:
+   st.header("CSV 업로드")
+   st.image("https://static.streamlit.io/examples/dog.jpg", width=200)
 
-@st.cache
-def load_data(nrows):
-    data = pd.read_csv(DATA_URL, nrows=nrows)
-    def lowercase(x): return str(x).lower()
-    data.rename(lowercase, axis='columns', inplace=True)
-    data[DATE_COLUMN] = pd.to_datetime(data[DATE_COLUMN])
-    return data
+   uploaded_file = st.file_uploader("Choose a file")
+if uploaded_file is not None:
+    # To read file as bytes:
+    bytes_data = uploaded_file.getvalue()
+    st.write(bytes_data)
 
+    # To convert to a string based IO:
+    stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
+    st.write(stringio)
 
-data_load_state = st.text('Loading data...')
-data = load_data(10000)
-data_load_state.text("Done! (using st.cache)")
+    # To read file as string:
+    string_data = stringio.read()
+    st.write(string_data)
 
-if st.checkbox('Show raw data'):
-    st.subheader('Raw data')
-    st.write(data)
+    # Can be used wherever a "file-like" object is accepted:
+    dataframe = pd.read_csv(uploaded_file)
+    st.write(dataframe)
 
-st.subheader('Number of pickups by hour')
-hist_values = np.histogram(
-    data[DATE_COLUMN].dt.hour, bins=24, range=(0, 24))[0]
-st.bar_chart(hist_values)
-
-hour_to_filter = st.slider('hour', 0, 23, 17)
-filtered_data = data[data[DATE_COLUMN].dt.hour == hour_to_filter]
-
-st.subheader('Map of all pickups at %s:00' % hour_to_filter)
-st.map(filtered_data)
+with tab3:
+   st.header("CSV 멀티업로드")
+   st.image("https://static.streamlit.io/examples/owl.jpg", width=200)
+    
+   uploaded_files = st.file_uploader("Choose a CSV file", accept_multiple_files=True)
+for uploaded_file in uploaded_files:
+    bytes_data = uploaded_file.read()
+    st.write("filename:", uploaded_file.name)
+    st.write(bytes_data)

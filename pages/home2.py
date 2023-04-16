@@ -1,22 +1,38 @@
-import folium
+import streamlit as st
+import pandas as pd
+import numpy as np
 
-# 위도
-latitude = 37.394946
-# 경도
-longitude = 127.111104
+st.title('Uber pickups in NYC')
 
-myMap = folium.Map(location=[latitude, longitude], zoom_start=12                   , width=750, height=500)
+DATE_COLUMN = 'date/time'
+DATA_URL = ('https://s3-us-west-2.amazonaws.com/'
+            'streamlit-demo-data/uber-raw-data-sep14.csv.gz')
 
-folium.Marker([latitude, longitude],
-  popup="판교역",
-  tooltip="판교역 입구",
-  color='tomato',
-  radius = 50, 
-  icon=folium.Icon(color='red', icon='star')).add_to(myMap)
 
-folium.CircleMarker([latitude, longitude],
-  radius=100,
-  color='blue',
-  fill_color='skyblue').add_to(myMap)
+@st.cache
+def load_data(nrows):
+    data = pd.read_csv(DATA_URL, nrows=nrows)
+    def lowercase(x): return str(x).lower()
+    data.rename(lowercase, axis='columns', inplace=True)
+    data[DATE_COLUMN] = pd.to_datetime(data[DATE_COLUMN])
+    return data
 
-myMap
+
+data_load_state = st.text('Loading data...')
+data = load_data(10000)
+data_load_state.text("Done! (using st.cache)")
+
+if st.checkbox('Show raw data'):
+    st.subheader('Raw data')
+    st.write(data)
+
+st.subheader('Number of pickups by hour')
+hist_values = np.histogram(
+    data[DATE_COLUMN].dt.hour, bins=24, range=(0, 24))[0]
+st.bar_chart(hist_values)
+
+hour_to_filter = st.slider('hour', 0, 23, 17)
+filtered_data = data[data[DATE_COLUMN].dt.hour == hour_to_filter]
+
+st.subheader('Map of all pickups at %s:00' % hour_to_filter)
+st.map(filtered_data)

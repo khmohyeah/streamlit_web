@@ -1,0 +1,24 @@
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch main
+# Your branch is up to date with 'origin/main'.
+#
+# Changes to be committed:
+#	modified:   app.py
+#	new file:   data/test.csv
+#	new file:   "data/\352\262\275\352\270\260\353\217\204\354\225\204\355\214\214\355\212\270\354\213\244\352\261\260\353\236\230\352\260\200_20220301_20230228.csv"
+#	new file:   index.html
+#	new file:   pages/home1.py
+#	new file:   pages/home2.py
+#	modified:   pages/page2.py
+#	new file:   pages/page3.py
+#	new file:   pages/page4.py
+#	new file:   pages/page5.py
+#	new file:   pages/page6.py
+#	new file:   pages/page7.py
+#	new file:   pages/page8.py
+#	new file:   pages/page9.py
+#	new file:   pages/pageA.py
+#
