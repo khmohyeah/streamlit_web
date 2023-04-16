@@ -2,8 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import datetime
-#import geopy
-from geopy.geocoders import Nominatim
 
 st.title('아파트매매실거래가정보 : 경기도 20220301~20230228')
 
